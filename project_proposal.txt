@@ -1,0 +1,11 @@
+Goal: create a CLI-based CAS for finding integrals and derivatives.
+Scope: any derivatives, integrals of polynomials, trigonometric expressions, some 
+exponential expressions using integration by parts, substitition and direct integration
+
+Example:
+
+>>> x^2*sin(x)
+Do you want to find the derivative or integrate? (d/i) i
+By what variable? x
+in  -> x^2sin(x)
+out -> -x^2cos(x) + 2xsin(x) + 2cos(x) + C
