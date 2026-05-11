@@ -44,6 +44,7 @@ input ""help"" to display help, ""exit"" to exit");
             Console.Write("By what variable? ");
             string? variable = Console.ReadLine();
             
+            // choice.ToLower()
             if (choice == "d" || choice == "D") {
                 try {
                     Console.WriteLine($"in  -> {in_expr.simplify().print()}");

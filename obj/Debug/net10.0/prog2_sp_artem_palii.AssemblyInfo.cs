@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("prog2_sp_artem_palii")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8ac1dff40f9735f3ab003dcb90857ccc5df837ea")]
 [assembly: System.Reflection.AssemblyProductAttribute("prog2_sp_artem_palii")]
 [assembly: System.Reflection.AssemblyTitleAttribute("prog2_sp_artem_palii")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
