@@ -594,7 +594,7 @@ class Multiply : Expr {
         to_factor[new ConstantExpr(1)] = 1;
         
         foreach (var (term, exp) in terms) {
-            if (term.derivative(int_var) is ConstantExpr c && c.Value == 0) {
+            if (term.derivative(int_var).simplify().simplify() is ConstantExpr c && c.Value == 0) {
                 to_factor[term] = exp;
             }
         }
@@ -675,7 +675,7 @@ class Multiply : Expr {
 
     public override Expr integral(string int_var) {
        
-        if (this.simplify().derivative(int_var).simplify() is ConstantExpr c && c.Value == 0) {
+        if (this.simplify().derivative(int_var).simplify().simplify() is ConstantExpr c && c.Value == 0) {
             return new Multiply(this, new VariableExpr(int_var));
         }
 
@@ -765,10 +765,10 @@ class Multiply : Expr {
     }
 
     public override string print() {
-        bool needStar = _left is ConstantExpr && _right is ConstantExpr
-                        || _right is Add
-                        || _right is Subtract;
-
+    
+        string left_str = decide_brackets(_left);
+        string right_str = decide_brackets(_right);
+        
         if (_left is ConstantExpr c1 && c1.Value == -1) {
             return $"-{decide_brackets(_right)}";
         }
@@ -777,8 +777,18 @@ class Multiply : Expr {
             return $"-{decide_brackets(_left)}";
         }
 
-        string op = needStar ? "*" : "";
-        return $"{decide_brackets(_left)}{op}{decide_brackets(_right)}";
+        bool need_star = _left is ConstantExpr && _right is ConstantExpr
+                      || _right is Add
+                      || _right is Subtract;
+        
+        if (!need_star) {
+            char last_of_left = left_str[left_str.Length - 1];
+            char first_of_right = right_str[0];
+            need_star = char.IsDigit(last_of_left) && (char.IsDigit(first_of_right) || first_of_right == '.');
+        }
+
+        string op = need_star ? "*" : "";
+        return $"{left_str}{op}{right_str}";
     }
 
 }

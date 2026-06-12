@@ -4,12 +4,42 @@ class Calculator {
     private Parser parser = new Parser();
 
     private void display_help() {
-        Console.WriteLine("Not implemented");
+        Console.WriteLine(
+@"Calculator for symbolic differentiation and integration.
+
+Usage:
+  Enter a mathematical expression at the prompt, then choose
+  whether to differentiate or integrate and specify the variable.
+  Note, that explicit ""*"" must be used for any multiplication,
+  i.e. 3*x, not 3x, and explicit brackets for functions,
+  i.e. sin(x), not sinx
+
+Supported operations:
+  +, -        addition, subtraction
+  *, /        multiplication, division
+  ^           exponentiation (right-associative)
+  (...)       grouping
+
+Built-in functions:
+  sin, cos, tan       (e.g. sin(x), tan(x^2 + 1))
+
+Constants:
+  Numeric literals (integers and decimals)
+
+Examples:
+  >>> 3*x^2 + 1
+  >>> sin(x)*cos(x)
+  >>> 3*2^x
+
+Commands:
+  help        Show this message
+  exit        Quit the program");
     }
 
     public void mainloop() {
         
-        Console.WriteLine(@"Input the expression you want to find derivative of or integrate, 
+        Console.WriteLine(
+@"Input the expression you want to find derivative of or integrate, 
 input ""help"" to display help, ""exit"" to exit");
         string? input;
         Expr in_expr;
