@@ -12,6 +12,8 @@ public abstract class Expr {
     // again, there is probabaly a way to do it safer and in a
     // way it is more scalable, but I did not find any, and for
     // the purposes of this project it is an overkill in my opinion
+    
+    // simplify() performs algebraic simplifications
 
     public abstract Expr simplify();
     public abstract Dictionary<Expr, double> try_simplify();
@@ -116,6 +118,8 @@ public abstract class Expr {
     }
 }
 
+// Holds numeric constants, simplification-related methods return 
+// trivial factor and coefficient dictionaries 
 class ConstantExpr : Expr {
 
     public double Value { get; }
@@ -153,8 +157,8 @@ class ConstantExpr : Expr {
         return obj is ConstantExpr c && Value == c.Value;
     }
 
-    // I decided not to complicate the system even further and just use
-    // approximation
+    // I decided not to complicate the system even further with 
+    // proper fractions handling and just use approximation
     public override string print() => Value.ToString("G4");
 
 }
@@ -209,6 +213,9 @@ class VariableExpr : Expr {
 
 }
 
+// Functions are unaware of what they actually are, they just hold a name,
+// and behaviours, that are specific to each function are handled individually
+// by each method, to whom it is relevant
 class Function : Expr {
 
     private string _name;
@@ -315,7 +322,7 @@ class Add : Expr {
         var right = _right.try_simplify();
         var result = new Dictionary<Expr, double>(left);
 
-        // Adds up terms of similar structure, ie same key, or create new 
+        // Adds up terms of identical structure, ie same key, or create new 
         // term, if such key does not exist on the left
         foreach (var (key, coeff) in right) {
             if (result.ContainsKey(key)) {
@@ -349,7 +356,7 @@ class Add : Expr {
                        _right.derivative(diff_var));
     } 
 
-    // A trick to make x*y == y*x, HashCode.Combine is not commutative
+    // A trick to make x+y == y+x, HashCode.Combine is not commutative
     public override int GetHashCode() {
         return HashCode.Combine(typeof(Add), _left.GetHashCode() + _right.GetHashCode());
     }
@@ -470,7 +477,7 @@ class Subtract : Expr {
     }
 
     public override int GetHashCode() {
-        return HashCode.Combine(_left, _right);
+        return HashCode.Combine(typeof(Subtract), _left.GetHashCode() - _right.GetHashCode());
     }
 
     public override bool Equals(object? obj) {
@@ -494,12 +501,13 @@ class Multiply : Expr {
         _right = right;
     }
 
+    // Performs polynomial multiplication, if applicable and returns
+    // a coefficient dictionary
     public override Dictionary<Expr, double> try_simplify() {
         var left = _left.try_simplify();
         var right = _right.try_simplify();
         var result = new Dictionary<Expr, double>();
 
-        // Performs standard polynomial multiplication
         foreach (var (key1, coeff1) in left) {
             foreach (var (key2, coeff2) in right) {
 
@@ -634,7 +642,8 @@ class Multiply : Expr {
     private static Expr build_chain_integral(Expr base_expr, Expr factor_der, Expr factor, string int_var) {
         return new Multiply(factor, new Multiply(factor_der, base_expr.integral(int_var)));
     }
-
+    
+    // returns result of integration by parts with particular u and v
     private static Expr integrate_by_parts(Expr u, Expr dv, Expr factor, string int_var) {
         
         Expr v = dv.integral(int_var);
@@ -673,6 +682,7 @@ class Multiply : Expr {
     
     }
 
+    // Tries every technique of integration above 
     public override Expr integral(string int_var) {
        
         if (this.simplify().derivative(int_var).simplify().simplify() is ConstantExpr c && c.Value == 0) {
@@ -805,8 +815,7 @@ class Divide : Expr {
         _right = right;
     }
 
-    // Not only returns trivial coefficient dictionary, but also
-    // normalizes the coefficients
+    // Returns trivial coefficient dictionary, normalizes the coefficients
     public override Dictionary<Expr, double> try_simplify() {
         Expr left = _left.simplify();
         Expr right = _right.simplify();

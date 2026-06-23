@@ -14,21 +14,15 @@ dotnet run
 
 <h3> Syntax and limitations </h3>
 
-The syntax can be observed in the examle run at the end of the readme, the only thing is that expressions like
+The syntax can be observed in the examle run at the end of the readme, the only thing is that an expression like
 
 ```
-2x
-3sin(x)
-xcos(x)
 tanx
 ```
 
-Will give you an error. Arguments of the functions must be bracketed and all multiplications must be explicit, right versions:
+Will give you an error. Arguments of the functions must be bracketed, right version:
 
 ```
-2*x
-3*sin(x)
-x*cos(x)
 tan(x)
 ```
 
@@ -49,7 +43,7 @@ Integration:
 Input the expression you want to find derivative of or integrate,
 input "help" to display help, "exit" to exit 
 
-\>>> sin(x)^(-2)*cos(x)
+\>>> sin(x)^(-2)cos(x)
 
 Do you want to find the derivative or integrate? (d/i) i
 
@@ -59,7 +53,7 @@ in  -> sin(x)^-2cos(x)
 
 out -> -sin(x)^-1 + C
 
-\>>> (x + 2)*(2*x^3 + x^2)
+\>>> (x + 2)(2x^3 + x^2)
 
 Do you want to find the derivative or integrate? (d/i) i
 
@@ -69,7 +63,7 @@ in  -> 2x^4 + 5x^3 + 2x^2
 
 out -> 0.4x^5 + 1.25x^4 + 0.6667x^3 + C
 
-\>>> d^3*sin(d)
+\>>> d^3sin(d)
 
 Do you want to find the derivative or integrate? (d/i) i
 
@@ -118,5 +112,3 @@ By what variable? x
 in  -> x^4 + 4x^3y + 6x^2y^2 + 4xy^3 + y^4
 
 out -> 0.2x^5 + yx^4 + 2y^2x^3 + 2y^3x^2 + y^4x + C
-
-\>>>

@@ -10,9 +10,9 @@ class Calculator {
 Usage:
   Enter a mathematical expression at the prompt, then choose
   whether to differentiate or integrate and specify the variable.
-  Note, that explicit ""*"" must be used for any multiplication,
-  i.e. 3*x, not 3x, and explicit brackets for functions,
-  i.e. sin(x), not sinx
+  Note, that explicit brackets for functions must be used,
+  i.e. sin(x), not sinx (in the latter case behaviour of the
+  program is undefined)
 
 Supported operations:
   +, -        addition, subtraction
@@ -27,8 +27,8 @@ Constants:
   Numeric literals (integers and decimals)
 
 Examples:
-  >>> 3*x^2 + 1
-  >>> sin(x)*cos(x)
+  >>> 3x^2 + 1
+  >>> sin(x)cos(x)
   >>> 3*2^x
 
 Commands:

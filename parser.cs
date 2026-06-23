@@ -67,17 +67,25 @@ public class Lexer {
             identifier += expression[pos];
             pos++;
         }
-
-        switch (identifier) {
-            case "sin": tokens.Add(new Token(TokenType.Function, identifier.ToString())); break;
-            case "cos": tokens.Add(new Token(TokenType.Function, identifier.ToString())); break;
-            case "tan": tokens.Add(new Token(TokenType.Function, identifier.ToString())); break;
-            default:
-                if (identifier.Length == 1) tokens.Add(new Token(TokenType.Variable, identifier));
-                else throw new Exception($"unexpected character: {identifier}");
+        
+        string[] functions = ["sin", "cos", "tan"];
+        Token? last = null;
+        foreach (string f in functions) {
+            if (identifier.EndsWith(f)) {
+                last = new Token(TokenType.Function, identifier.Substring(identifier.Length - f.Length));
+                identifier = identifier.Substring(0, identifier.Length - f.Length);
                 break;
+            }
         }
 
+        foreach (char c in identifier) {
+            tokens.Add(new Token(TokenType.Variable, c.ToString()));
+        }
+
+        if (last != null) {
+            tokens.Add(last);
+        }
+        
     }
 
     public List<Token> lex(string expr_in) {
@@ -101,7 +109,14 @@ public class Lexer {
                 default: throw new Exception($"unexpected character: {expression[pos]}");
             }
         }
-
+        
+        /*
+         * For the potential debug mode
+        foreach (Token t in tokens) {
+            Console.WriteLine(t.ToString());
+        }
+        */
+        
         return tokens;
     }
 
@@ -111,7 +126,26 @@ public class Parser {
 
     private int pos = 0;
     private List<Token> tokens = new List<Token>();
+    
+    void add_implicit_multiplications() {
 
+        for (int i = 0; i < tokens.Count - 1; i++) {
+            
+            // If an identifier from left_identifiers and right_identifiers are conscecutive,
+            // there is implicit multiplication
+            List<TokenType> left_identifiers = [TokenType.Number, TokenType.Variable, TokenType.RightBracket];
+            List<TokenType> right_identifiers = [TokenType.Number, TokenType.Variable, TokenType.Function, TokenType.LeftBracket];
+            Token cur = tokens[i];
+            Token next = tokens[i + 1];
+
+            if (left_identifiers.Contains(cur.type) && right_identifiers.Contains(next.type)) {
+                tokens.Insert(i + 1, new Token(TokenType.Star, "*"));
+            }
+
+        }
+
+    }
+    
     private Token? peek() {
         return pos < tokens.Count ? tokens[pos] : null;
     }
@@ -196,7 +230,7 @@ public class Parser {
             // in a right-associative way, higher will cause left-associativity.
             // '+' and '*' are associative, so they are can be parsed in any way,
             // my algorith does it intutitively left-associatively, 
-            // ex:  3+4+5 => (3+4)+5 instead of 3+(4+5)
+            // ex: 3+4+5 => (3+4)+5 instead of 3+(4+5)
             Expr right;
             if (op.type == TokenType.Caret) {
                 right = parse(precedence(op));
@@ -220,6 +254,7 @@ public class Parser {
     public Expr Parse(List<Token> token_input) {
         pos = 0;
         tokens = token_input;
+        add_implicit_multiplications();
         return parse();
     }
 
